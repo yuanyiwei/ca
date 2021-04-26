@@ -1,0 +1,70 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{latexsym}
+\title{计算机体系结构 实验1}
+\date{\today}
+\author{PB18000203汪洪韬}
+\begin{document}
+	\maketitle
+	\section{实验说明}
+	本次实验是 RV32I Core 设计的铺垫。我们提供了一个样例 RV32I Core 的设计图，参考设计图，理解每条指令需要的数据通路，以及相应的控制信号，并回答相应问题。
+	
+	\section{待实现指令}
+	RISC-V 32bit 整型指令集（除去FENCE,FENCE.I,CSR,ECALL 和 EBREAK 指令）
+	
+	\section{实验报告}
+	\subsection{描述执行一条 XOR 指令的过程（数据通路、控制信号等）。}
+	数据通路：IM取指令译码得到rs1、rs2和rd的地址，在Reg中得到rs1和rs2的值，在EX段进行计算，最后写回rd。
+	
+	控制信号：Alusrc选择两个寄存器的值，AluControl选择XOR，RegWrite选择有效，LoadNpc选择ALU输出，MemtoReg选择Alu输出，其余控制信号无效。
+	
+	\subsection{描述执行一条 BEQ 指令的过程（数据通路、控制信号等）。}
+	数据通路：IM取指令译码得到rs1、rs2的地址和SB类imm的值，在Reg中得到rs1和rs2的值，在EX段计算，若BrE有效则PC\_IN=PCF+BrT，跳转到目标地址；若BrE无效则PC\_IN=PCF+4。
+	
+	控制信号：ImmType选择SB，Alusrc选择两个寄存器的值，AluControl选择相减，BranchType选择BEQ，若相等则BrE为有效，LoadNpc为ALU输出，其余信号无效。
+	
+	\subsection{描述执行一条 LHU 指令的过程（数据通路、控制信号等）。}
+	数据通路：IM取指令译码得到，rs地址和I类imm的值，在Reg中得到rs的值，在EX段计算，然后将结果作为地址在MEM段取值，最后在WB段将16位数符号扩展为32位写回寄存器。
+	
+	控制信号：RegWrite有效，MemToReg选择ImmType选择mem数据，Alusrc1选择rs的值，AluSrc2选择imm的值，AluControl选择LH，LoadNpc为ALU输出，LoadByteSelect为LH，其余信号无效。
+	
+	\subsection{如果要实现 CSR 指令（csrrw，csrrs，csrrc，csrrwi，csrrsi，csrrci），设计图中还需要增加什么部件和数据通路？给出详细说明。}
+	\begin{itemize}
+		\item 控制信号：增加CSR读写使能信号；增加AluSrc2中CSR数据选择信号；增加立即数扩展中的CSR扩展信号；
+		\item ID段：添加CSR寄存器；立即数扩展模块支持CSR扩展；
+		\item EX段：Alu操作数2的选择中增加CSR寄存器的值；
+		\item WB段：写回CSR寄存器。
+	\end{itemize}
+
+	\subsection{Verilog 如何实现立即数的扩展？}
+	\begin{center}
+		\includegraphics[width = .5\textwidth]{inst.JPG}\\
+	\end{center}
+
+	\subsection{如何实现 Data Cache 的非字对齐的 Load 和 Store？}
+	对于LOAD指令，将由ALU计算的结果的低两位清零，将结果作为对齐后的地址进行LOAD；对于STORE，根据WE的值来确定地址的非对齐的位数，然后进行STORE操作。
+	
+	\subsection{ALU 模块中，默认 wire 变量是有符号数还是无符号数？}
+	无符号数
+	
+	\subsection{简述BranchE信号的作用。}
+	条件分支中，若EX段中两个寄存器的值相同则BranchE信号有效，控制NPC Generator使得$PC\_IN=PCF+BrT$，跳转到目标地址；若BrE无效则$PC\_IN=PCF+4$。
+	
+	\subsection{NPC Generator 中对于不同跳转 target 的选择有没有优先级？}
+	有，BrE、JalrE大于JalD，因为前两者更先执行（EX段指令）。
+	
+	\subsection{Harzard 模块中，有哪几类冲突需要插入气泡，分别使流水线停顿几个周期？}
+	\begin{itemize}
+		\item 跳转分支指令，停顿2个周期
+		\item 装载-使用型，停顿1个周期
+	\end{itemize}
+
+	\subsection{Harzard 模块中采用静态分支预测器，即默认不跳转，遇到 branch 指令时，如何控制 flush 和 stall 信号？}
+	若不跳转则无需flush和stall；若跳转则需要flush IF/ID和ID/EX，并将stall置0，停止下面两条语句的执行。
+	\subsection{0 号寄存器值始终为 0，是否会对 forward 的处理产生影响？}
+	写入0号寄存器总是被丢弃，提供了常量0和写入丢弃的场所；利用 addi x0, x0, 0来实现nop； 当某条运算指令写x0时，不对后续指令转发运算结果，而是转发0。
+	
+	\section{实验收获}
+	回顾了组成原理实验中的流水线设计的大部分内容，同时对RISC-V流水线设计的基本数据通路和控制信号有了一定的认识，对一些新的指令和原先指令的数据通路的变化有了了解，对新的控制信号的作用和产生也有了了解，收获很大。
+\end{document}
