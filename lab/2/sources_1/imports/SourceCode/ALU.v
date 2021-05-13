@@ -50,7 +50,7 @@ module ALU(
             `LUI: AluOut <= Operand2;
 
             `CLR: AluOut <= ~Operand1 & Operand2;
-            `REG1:AluOut <= Operand1;
+            `REG1: AluOut <= Operand1;
             default: AluOut <= 32'hxxxxxxxx;
         endcase
     end

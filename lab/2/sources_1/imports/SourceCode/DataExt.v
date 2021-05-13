@@ -34,47 +34,47 @@ module DataExt(
     // 请补全此处代码
     always @(*) begin
         case (RegWriteW)
-            `LB : begin //signed extend + selected bytes
+            `LB : begin //load byte
                 case (LoadedBytesSelect)
-                    2'b00: OUT = { {25{IN[7]} }, IN[6:0]};
-                    2'b01: OUT = { {25{IN[15]}}, IN[14:8]};
-                    2'b10: OUT = { {25{IN[23]} }, IN[22:16]};
-                    2'b11: OUT = { {25{IN[31]} }, IN[30:24]};
+                    2'b00: OUT = {{24{IN[7]}}, IN[7:0]};
+                    2'b01: OUT = {{24{IN[15]}}, IN[15:8]};
+                    2'b10: OUT = {{24{IN[23]}}, IN[23:16]};
+                    2'b11: OUT = {{24{IN[31]}}, IN[31:24]};
                     default: OUT = 32'hxxxxxxxx;
                 endcase
             end
-            `LH : begin //load 16bit
+            `LH : begin //load hex
                 case(LoadedBytesSelect)
-                    2'b00: OUT = { {17{IN[15]}},IN[14:0] };
-                    //2'b01: OUT = { {17{IN[23]}},IN[22:8]};
-                    2'b10: OUT = { {17{IN[31]}},IN[30:16]};
+                    2'b00: OUT = {{16{IN[15]}}, IN[15:0]};
+                    // 2'b01: OUT = {{16{IN[23]}}, IN[23:8]};
+                    2'b10: OUT = {{16{IN[31]}}, IN[31:16]};
                     default: OUT = 32'hxxxxxxxx;
                 endcase
             end
-            `LW : begin
+            `LW : begin //load word
                 case(LoadedBytesSelect)
                     2'b00: OUT = IN;
-                    //2'b01: OUT = {{9{IN[31]}},IN[30:8]};
-                    //2'b10: OUT = {{17{IN[31]}},IN[30:16]};
-                    //2'b11: OUT = {{25{IN[31]}},IN[30:24]};
+                    // 2'b01: OUT = {{8{IN[31]}}, IN[31:8]};
+                    // 2'b10: OUT = {{16{IN[31]}}, IN[31:16]};
+                    // 2'b11: OUT = {{24{IN[31]}}, IN[31:24]};
                     default: OUT = 32'hxxxxxxxx;
                 endcase
             end
             `LBU: begin
                 case(LoadedBytesSelect)
-                    2'b00: OUT = { { 24'b0 }, IN[7:0] };
-                    2'b01: OUT = { { 24'b0 }, IN[15:8] };
-                    2'b10: OUT = { { 24'b0 }, IN[23:16] };
-                    2'b11: OUT = { { 24'b0 }, IN[31:24] };
+                    2'b00: OUT = {{24'b0}, IN[7:0]};
+                    2'b01: OUT = {{24'b0}, IN[15:8]};
+                    2'b10: OUT = {{24'b0}, IN[23:16]};
+                    2'b11: OUT = {{24'b0}, IN[31:24]};
                     default: OUT = 32'hxxxxxxxx;
                 endcase
             end
             `LHU: begin
                 case(LoadedBytesSelect)
-                    2'b00: OUT = {16'b0,IN[15:0]};
-                    //2'b01: OUT = {16'b0,IN[23:8]};
-                    2'b10: OUT = {16'b0,IN[31:16]};
-                    //2'b11: OUT = {24'b0,IN[31:23]};
+                    2'b00: OUT = {{16'b0}, IN[15:0]};
+                    // 2'b01: OUT = {{16'b0}, IN[23:8]};
+                    2'b10: OUT = {{16'b0}, IN[31:16]};
+                    // 2'b11: OUT = {{24'b0}, IN[31:23]};
                     default: OUT = 32'hxxxxxxxx;
                 endcase
             end

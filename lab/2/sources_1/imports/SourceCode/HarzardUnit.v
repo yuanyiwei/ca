@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-// TODO
+// OK
 //////////////////////////////////////////////////////////////////////////////////
 // Company: USTC ESLAB
 // Engineer: Wu Yuzhang
@@ -37,53 +37,53 @@ module HarzardUnit(
     input wire [2:0] RegWriteM, RegWriteW,
     output reg StallF, FlushF, StallD, FlushD, StallE, FlushE, StallM, FlushM, StallW, FlushW,
     output reg [1:0] Forward1E, Forward2E,
-    // CSR signals
+    //CSR
     input wire CSRRead, CSRWriteM, CSRWriteW,
-    input wire [11:0] CSRSrcE,CSRSrcM,CSRSrcW,
+    input wire [11:0] CSRSrcE, CSRSrcM, CSRSrcW,
     output reg [1:0] Forward3E
     );
 
     // 请补全此处代码
     always@(*) begin
-        if (RegWriteM && RegReadE[1] && RdM==Rs1E && RdM )
-            Forward1E<=2'b10;
-        else if( RegWriteW && RegReadE[1] && RdW==Rs1E && RdW )
-            Forward1E<=2'b01;
+        if (RegWriteM && RegReadE[1] && RdM==Rs1E && RdM)
+            Forward1E <= 2'b10;
+        else if (RegWriteW && RegReadE[1] && RdW==Rs1E && RdW)
+            Forward1E <= 2'b01;
         else
-            Forward1E<=2'b00;
+            Forward1E <= 2'b00;
     end
 
     always@(*) begin
-        if( RegWriteM && RegReadE[0] && RdM==Rs2E && RdM )
-            Forward2E<=2'b10;
-        else if( RegWriteW && RegReadE[0] && RdW==Rs2E && RdW )
-            Forward2E<=2'b01;
+        if (RegWriteM && RegReadE[0] && RdM==Rs2E && RdM)
+            Forward2E <= 2'b10;
+        else if (RegWriteW && RegReadE[0] && RdW==Rs2E && RdW)
+            Forward2E <= 2'b01;
         else
-            Forward2E<=2'b00;
-    end      
+            Forward2E <= 2'b00;
+    end
 
-    //forward CSR sources
+    //CSR
     always@(*) begin
-        if( CSRWriteM && CSRRead && CSRSrcM==CSRSrcE )
-            Forward3E<=2'b10;
-        else if( CSRWriteW && CSRRead && CSRSrcW==CSRSrcE )
-            Forward3E<=2'b01;
+        if (CSRWriteM && CSRRead && CSRSrcM==CSRSrcE)
+            Forward3E <= 2'b10;
+        else if (CSRWriteW && CSRRead && CSRSrcW==CSRSrcE)
+            Forward3E <= 2'b01;
         else
-            Forward3E<=2'b00;
-    end     
+            Forward3E <= 2'b00;
+    end
 
     always @ (*) begin
-        {StallF,FlushF,StallD,FlushD,StallE,FlushE,StallM,FlushM,StallW,FlushW} <= 0;
+        {StallF, FlushF, StallD, FlushD, StallE, FlushE, StallM, FlushM, StallW, FlushW} <= 0;
         if(CpuRst)
-            {FlushF,FlushD,FlushE,FlushM,FlushW} <= 5'b11111;
-        else if(DCacheMiss | ICacheMiss)
-            {StallF,StallD,StallE,StallM,StallW} <= 5'b11111;
-        else if(BranchE | JalrE)
-            {FlushD,FlushE} <= 2'b11;
-        else if(MemToRegE & ((RdE==Rs1D)||(RdE==Rs2D)) )
-            {StallF,StallD,FlushE} <= 3'b111;
-        else if(JalD)
-            FlushD <= 1;  
+            {FlushF, FlushD, FlushE, FlushM, FlushW} <= 5'b11111;
+        else if (DCacheMiss | ICacheMiss)
+            {StallF, StallD, StallE, StallM, StallW} <= 5'b11111;
+        else if (BranchE | JalrE)
+            {FlushD, FlushE} <= 2'b11;
+        else if (MemToRegE & ((RdE==Rs1D)||(RdE==Rs2D)))
+            {StallF, StallD, FlushE} <= 3'b111;
+        else if (JalD)
+            FlushD <= 1;
     end
     // 请补全此处代码
 

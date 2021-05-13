@@ -1,19 +1,6 @@
 `timescale 1ns / 1ps
-// TODO
+// OK
 /////////////////////////////////////////////
-//  功能说明
-    //  CSR寄存器，提供读写端口
-    //  时钟下降沿写
-// 输入
-    // clk               时钟信号
-    // rst               寄存器重置
-    // write_en          寄存器写使能
-    // addr              reg读
-    // wb_addr           写回地址
-    // wb_data           写回数据
-// 输出
-    // rd_reg            reg读数
-
 
 module CSR(
     input wire clk,
@@ -33,11 +20,10 @@ module CSR(
     always@(negedge clk or posedge rst) begin
         if (rst)
             for (i = 0; i < 32; i = i + 1)
-                reg_file[i][31:0] <= 0;
-        else if(write_en)
+                reg_file[i][31:0] <= 32'b0;
+        else if (write_en)
             reg_file[wb_addr] <= wb_data;
     end
-
     assign rd_reg = reg_file[addr];
 
 endmodule

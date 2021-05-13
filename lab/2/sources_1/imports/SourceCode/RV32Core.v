@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 // OK
 //////////////////////////////////////////////////////////////////////////////////
-// Company: USTC ESLAB 
+// Company: USTC ESLAB
 // Engineer: Wu Yuzhang
-// 
+//
 // Design Name: RISCV-Pipline CPU
 // Module Name: RV32Core
 // Target Devices: Nexys4
@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 //功能说明
     //RV32I 指令集CPU的顶层模块
-//实验要求  
+//实验要求
     //无需修改
 
 module RV32Core(
@@ -32,9 +32,9 @@ module RV32Core(
     wire [31:0] PC_In;
     wire [31:0] PCF;
     wire [31:0] Instr, PCD;
-    wire JalD, JalrD, LoadNpcD; 
-    wire [1:0] AluSrc1D;    /////////////////////////////
-    wire [1:0] MemToRegD;   /////////////////////////////
+    wire JalD, JalrD, LoadNpcD;
+    wire [1:0] AluSrc1D;
+    wire [1:0] MemToRegD;
     wire [2:0] RegWriteD;
     wire [3:0] MemWriteD;
     wire [1:0] RegReadD;
@@ -48,7 +48,7 @@ module RV32Core(
     wire [2:0] ImmType;
     wire [31:0] ImmD;
     wire [31:0] JalNPC;
-    wire [31:0] BrNPC; 
+    wire [31:0] BrNPC;
     wire [31:0] ImmE;
     wire [6:0] OpCodeD, Funct7D;
     wire [2:0] Funct3D;
@@ -60,7 +60,7 @@ module RV32Core(
     wire [31:0] RegOut2E;
     wire JalrE;
     wire [2:0] RegWriteE;
-    wire [1:0] MemToRegE;     ///////////////////////////
+    wire [1:0] MemToRegE;
     wire [3:0] MemWriteE;
     wire LoadNpcE;
     wire [1:0] RegReadE;
@@ -72,22 +72,22 @@ module RV32Core(
     wire [31:0] Operand2;
     wire BranchE;
     wire [31:0] AluOutE;
-    wire [31:0] AluOutM; 
+    wire [31:0] AluOutM;
     wire [31:0] ForwardData1;
     wire [31:0] ForwardData2;
     wire [31:0] ForwardData3;
     wire [31:0] PCE;
-    wire [31:0] StoreDataM; 
+    wire [31:0] StoreDataM;
     wire [4:0] RdM;
     wire [31:0] PCM;
     wire [2:0] RegWriteM;
-    wire [1:0] MemToRegM;   ////////////////////////////////
+    wire [1:0] MemToRegM;
     wire [3:0] MemWriteM;
     wire LoadNpcM;
     wire [31:0] DM_RD;
     wire [31:0] ResultM;
     wire [31:0] ResultW;
-    wire [1:0] MemToRegW; //////////////////////////////
+    wire [1:0] MemToRegW;
     wire [1:0] Forward1E;
     wire [1:0] Forward2E;
     wire [1:0] Forward3E;
@@ -97,7 +97,7 @@ module RV32Core(
     wire [31:0] CSROutE;
     wire [31:0] CSROutM;
     wire [31:0] CSROutW;
-    wire [31:0] CSRaddrD; // 12
+    wire [31:0] CSRaddrD; //12addr
     wire [31:0] ForwardDataMem;
     wire [11:0] CSRaddrE;
     wire [11:0] CSRaddrM;
@@ -126,8 +126,8 @@ module RV32Core(
     // ---------------------------------------------
     NPC_Generator NPC_Generator1(
         .PCF(PCF),
-        .JalrTarget(AluOutE), 
-        .BranchTarget(BrNPC), 
+        .JalrTarget(AluOutE),
+        .BranchTarget(BrNPC),
         .JalTarget(JalNPC),
         .BranchE(BranchE),
         .JalD(JalD),
@@ -138,7 +138,7 @@ module RV32Core(
     IFSegReg IFSegReg1(
         .clk(CPU_CLK),
         .en(~StallF),
-        .clear(FlushF), 
+        .clear(FlushF),
         .PC_In(PC_In),
         .PCF(PCF)
     );
@@ -157,7 +157,7 @@ module RV32Core(
         .WE2(CPU_Debug_InstRAM_WE2),
         .RD2(CPU_Debug_InstRAM_RD2),
         .PCF(PCF),
-        .PCD(PCD) 
+        .PCD(PCD)
     );
 
     ControlUnit ControlUnit1(
@@ -204,7 +204,7 @@ module RV32Core(
         .clk(CPU_CLK),
         .rst(CPU_RST),
         .write_en(CSRwrenW),
-        .addr(CSRaddrD), 
+        .addr(CSRaddrD),
         .wb_addr(CSRaddrW),
         .wb_data(ResultW),
         .rd_reg(CSROutD) //
@@ -218,9 +218,9 @@ module RV32Core(
         .en(~StallE),
         .clear(FlushE),
         .PCD(PCD),
-        .PCE(PCE), 
+        .PCE(PCE),
         .JalNPC(JalNPC),
-        .BrNPC(BrNPC), 
+        .BrNPC(BrNPC),
         .ImmD(ImmD),
         .ImmE(ImmE),
         .RdD(RdD),
@@ -261,7 +261,7 @@ module RV32Core(
         .CSRReadD(CSRReadD),
         .CSRwrenE(CSRwrenE),
         .CSRReadE(CSRReadE)
-    	); 
+    	);
 
     ALU ALU1(
         .Operand1(Operand1),
@@ -285,9 +285,9 @@ module RV32Core(
         .en(~StallM),
         .clear(FlushM),
         .AluOutE(AluOutE),
-        .AluOutM(AluOutM), 
+        .AluOutM(AluOutM),
         .ForwardData2(ForwardData2),
-        .StoreDataM(StoreDataM), 
+        .StoreDataM(StoreDataM),
         .RdE(RdE),
         .RdM(RdM),
         .PCE(PCE),
@@ -303,7 +303,7 @@ module RV32Core(
         .CSRaddrM(CSRaddrM),
         .CSRaddrE(CSRaddrE),
         .CSROutM(CSROutM),
-        .CSROutE(ForwardData3),//////////////
+        .CSROutE(ForwardData3),
         .CSRwrenM(CSRwrenM),
         .CSRwrenE(CSRwrenE)
     );
@@ -325,7 +325,7 @@ module RV32Core(
         .WE2(CPU_Debug_DataRAM_WE2),
         .RD2(CPU_Debug_DataRAM_RD2),
         .ResultM(ResultM),
-        .ResultW(ResultW), 
+        .ResultW(ResultW),
         .RdM(RdM),
         .RdW(RdW),
         .RegWriteM(RegWriteM),
@@ -339,7 +339,7 @@ module RV32Core(
         .CSRwrenM(CSRwrenM),
         .CSRwrenW(CSRwrenW)
     );
-    
+
     DataExt DataExt1(
         .IN(DM_RD),
         .LoadedBytesSelect(LoadedBytesSelect),
@@ -359,7 +359,7 @@ module RV32Core(
         .Rs1E(Rs1E),
         .Rs2E(Rs2E),
         .RegReadE(RegReadE),
-        .MemToRegE(MemToRegE), // 2 but 1
+        .MemToRegE(MemToRegE), // now 2addr but origin 1addr
         .RdE(RdE),
         .RdM(RdM),
         .RegWriteM(RegWriteM),
@@ -380,12 +380,12 @@ module RV32Core(
         .Forward1E(Forward1E),
         .Forward2E(Forward2E),
         .Forward3E(Forward3E),
-        .CSRRead(CSRReadE), 
-        .CSRWriteM(CSRwrenM), 
+        .CSRRead(CSRReadE),
+        .CSRWriteM(CSRwrenM),
         .CSRWriteW(CSRwrenW),
         .CSRSrcE(CSRaddrE),
         .CSRSrcM(CSRaddrM),
         .CSRSrcW(CSRaddrW)
-    	);    
-    	         
+    	);
+
 endmodule

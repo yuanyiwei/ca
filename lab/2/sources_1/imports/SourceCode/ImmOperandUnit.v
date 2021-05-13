@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 // OK
 //////////////////////////////////////////////////////////////////////////////////
-// Company: USTC ESLAB 
+// Company: USTC ESLAB
 // Engineer: Wu Yuzhang
-// 
+//
 // Design Name: RISCV-Pipline CPU
 // Module Name: ImmOperandUnit
 // Target Devices: Nexys4
@@ -17,8 +17,8 @@
     //Type      表示立即数编码类型，全部类型定义在Parameters.v中
 //输出
     //OUT       表示指令对应的立即数32bit实际值
-//实验要求  
-    //补全ImmOperandUnit模块，需补全的片段截取如下  
+//实验要求
+    //补全ImmOperandUnit模块，需补全的片段截取如下
     //always@(*)
     //begin
     //    case(Type)
@@ -28,7 +28,7 @@
     //    endcase
     //end
 
-`include "Parameters.v"   
+`include "Parameters.v"
 module ImmOperandUnit(
     input wire [31:7] In,
     input wire [2:0] Type,
@@ -49,4 +49,3 @@ module ImmOperandUnit(
     // 请补全此处代码
 
 endmodule
-

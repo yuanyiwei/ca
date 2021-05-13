@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 // OK
 //////////////////////////////////////////////////////////////////////////////////
-// Company: USTC ESLAB 
+// Company: USTC ESLAB
 // Engineer: Wu Yuzhang
-// 
+//
 // Design Name: RISCV-Pipline CPU
 // Module Name: MEMSegReg
 // Target Devices: Nexys4
@@ -12,18 +12,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 //功能说明
     //MEMSegReg是EX-MEM段寄存器
-//实验要求  
+//实验要求
     //无需修改
-    
+
 module MEMSegReg(
     input wire clk,
     input wire en,
     input wire clear,
     //Data Signals
     input wire [31:0] AluOutE,
-    output reg [31:0] AluOutM, 
+    output reg [31:0] AluOutM,
     input wire [31:0] ForwardData2,
-    output reg [31:0] StoreDataM, 
+    output reg [31:0] StoreDataM,
     input wire [4:0] RdE,
     output reg [4:0] RdM,
     input wire [31:0] PCE,
@@ -59,7 +59,7 @@ module MEMSegReg(
         CSRaddrM = 0;
         CSRwrenM = 0;
     end
-    
+
     always@(posedge clk)
         if(en) begin
             AluOutM    <= clear ?     0 : AluOutE;
@@ -75,5 +75,5 @@ module MEMSegReg(
             CSRaddrM   <= clear ?     0 : CSRaddrE;
             CSRwrenM   <= clear ?     0 : CSRwrenE;
         end
-    
+
 endmodule
