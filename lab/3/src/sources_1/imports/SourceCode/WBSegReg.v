@@ -37,7 +37,7 @@
     //请配合DataExt模块实现非字对齐字节load
     //请通过补全代码实现非字对齐store
 
-`include "../CacheSrcCode/cache_param.v" 
+`include "../CacheSrcCode/cache_param.v"
 
 module WBSegReg(
     input wire clk,
@@ -98,29 +98,23 @@ module WBSegReg(
         end
 
     wire [31:0] RD_raw;
-
     wire wr_req;
     assign wr_req=|WE;
     cache #(
-        .LINE_ADDR_LEN  ( `C_LINE_ADDR_LEN ),
-        .SET_ADDR_LEN   ( `C_SET_ADDR_LEN  ),
-        .TAG_ADDR_LEN   ( `C_TAG_ADDR_LEN  ),
-        .WAY_CNT        ( `C_WAY_CNT       ),
-        .WAY_LEN        ( `C_WAY_LEN       )
-    )  CacheInst (
-        .clk    ( clk      ),   
-        .rst    ( rst      ),   
-        .miss   ( miss     ),                  
-        .addr   ( A[31:0]  ),
-        .rd_req ( MemReadM ),             
-        .rd_data( RD_raw   ),             
-        .wr_req ( wr_req   ),                 
-        .wr_data( wd_shift )
+        .LINE_ADDR_LEN  (`C_LINE_ADDR_LEN),
+        .SET_ADDR_LEN   (`C_SET_ADDR_LEN ),
+        .TAG_ADDR_LEN   (`C_TAG_ADDR_LEN ),
+        .WAY_CNT        (`C_WAY_CNT      )
+        )  CacheInst (
+        .clk    (clk     ),
+        .rst    (rst     ),
+        .miss   (miss    ),
+        .addr   (A[31:0] ),
+        .rd_req (MemReadM),
+        .rd_data(RD_raw  ),
+        .wr_req (wr_req  ),
+        .wr_data(wd_shift)
     );
-    // Add clear and stall support
-    // if chip not enabled, output output last read result
-    // else if chip clear, output 0
-    // else output values from bram
     // 以下部分无需修改
     reg stall_ff= 1'b0;
     reg clear_ff= 1'b0;
@@ -134,42 +128,35 @@ module WBSegReg(
     assign RD = stall_ff ? RD_old : (clear_ff ? 32'b0 : RD_raw);
 
     wire rd_request;
-    assign rd_request = MemReadM;
     reg dmiss, drd_request, dwr_req;
-    wire emiss, erd_req, ewr_req;
-    reg [31:0] miss_count,access_count;
+    wire missen, rd_reqen, wr_reqen;
+    reg [31:0] miss_count, req_count;
+    assign rd_request = MemReadM;
+    assign missen = (miss==1)&(dmiss==0);
+    assign rd_reqen = (rd_request==1)&(drd_request==0);
+    assign wr_reqen = (wr_req==1)&(dwr_req==0);
+
     always @(posedge clk) begin
-        if (miss) begin
-            dmiss<=1;
-        end
-        else 
-            dmiss<=0;
-        if (rd_request) begin
-            drd_request<=1;
-        end
-        else 
-            drd_request<=0;
-        if (wr_req) begin
-            dwr_req<=1;
-        end
-        else 
-            dwr_req<=0;
-    end
-    assign emiss = (miss==1)&(dmiss==0);
-    assign erd_req = (rd_request==1)&(drd_request==0);
-    assign ewr_req = (wr_req==1)&(dwr_req==0);
-    
-    always @(posedge clk) begin
-        if (rst) begin
-            miss_count<=0;
-            access_count<=0;
-        end
-        else begin
-            if (emiss)
-                miss_count<=miss_count+1;
-            if (erd_req|ewr_req)
-                access_count<=access_count+1;
-        end
+        if (miss) dmiss <= 1;
+        else dmiss <= 0;
+
+        if (rd_request) drd_request <= 1;
+        else drd_request <= 0;
+
+        if (wr_req) dwr_req<=1;
+        else dwr_req<=0;
     end
 
+    always @(posedge clk) begin
+        if (rst) begin
+            miss_count <= 0;
+            req_count <= 0;
+        end
+        else begin
+            if (missen)
+                miss_count <= miss_count+1;
+            if (rd_reqen|wr_reqen)
+                req_count <= req_count+1;
+        end
+    end
 endmodule

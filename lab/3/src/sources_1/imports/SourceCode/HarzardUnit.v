@@ -45,7 +45,7 @@ module HarzardUnit(
     );
 
     // 请补全此处代码
-    always@(*) begin
+    always @(*) begin
         if (RegWriteM && RegReadE[1] && RdM==Rs1E && RdM)
             Forward1E <= 2'b10;
         else if (RegWriteW && RegReadE[1] && RdW==Rs1E && RdW)
@@ -54,7 +54,7 @@ module HarzardUnit(
             Forward1E <= 2'b00;
     end
 
-    always@(*) begin
+    always @(*) begin
         if (RegWriteM && RegReadE[0] && RdM==Rs2E && RdM)
             Forward2E <= 2'b10;
         else if (RegWriteW && RegReadE[0] && RdW==Rs2E && RdW)
@@ -64,7 +64,7 @@ module HarzardUnit(
     end
 
     //CSR
-    always@(*) begin
+    always @(*) begin
         if (CSRWriteM && CSRRead && CSRSrcM==CSRSrcE)
             Forward3E <= 2'b10;
         else if (CSRWriteW && CSRRead && CSRSrcW==CSRSrcE)
@@ -73,9 +73,9 @@ module HarzardUnit(
             Forward3E <= 2'b00;
     end
 
-    always@(*) begin
+    always @(*) begin
         {StallF, FlushF, StallD, FlushD, StallE, FlushE, StallM, FlushM, StallW, FlushW} <= 0;
-        if(CpuRst)
+        if (CpuRst)
             {FlushF, FlushD, FlushE, FlushM, FlushW} <= 5'b11111;
         else if (miss)
         // else if (DCacheMiss | ICacheMiss)
