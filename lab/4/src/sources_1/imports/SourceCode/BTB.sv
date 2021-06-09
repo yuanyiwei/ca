@@ -27,8 +27,6 @@ wire [BTB_BIT_LEN - 1:0] PC_E_pos = PC_E[BTB_BIT_LEN + 1:2];
 assign predicted_valid = ((branch_PC[PC_F_pos] == PC_F)) ? 1'b1 : 1'b0;
 assign predicted_PC = ((branch_PC[PC_F_pos] == PC_F)) ? target_PC[PC_F_pos] : 32'b0;
 
-wire is_PCE_branch = (br_type_E != `NOBRANCH);
-
 always @(posedge clk or posedge rst)
 begin
     if (rst)
@@ -42,7 +40,7 @@ begin
     end
     else
     begin
-        if (is_PCE_branch & branch_E)
+        if ((br_type_E != `NOBRANCH) & branch_E)
         begin
             branch_PC[PC_E_pos] <= PC_E;
             target_PC[PC_E_pos] <= target_E;

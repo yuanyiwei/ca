@@ -41,7 +41,8 @@ module HarzardUnit(
     //CSR
     input wire CSRRead, CSRWriteM, CSRWriteW,
     input wire [11:0] CSRSrcE, CSRSrcM, CSRSrcW,
-    output reg [1:0] Forward3E
+    output reg [1:0] Forward3E,
+    input wire predicted_EX_error
     );
 
     // 请补全此处代码
@@ -78,14 +79,21 @@ module HarzardUnit(
         if (CpuRst)
             {FlushF, FlushD, FlushE, FlushM, FlushW} <= 5'b11111;
         else if (miss)
-        // else if (DCacheMiss | ICacheMiss)
             {StallF, StallD, StallE, StallM, StallW} <= 5'b11111;
-        else if (BranchE | JalrE)
+        else if (BranchE) begin
+            if (predicted_EX_error)
+                {FlushD, FlushE} <= 2'b11;
+            else
+                {FlushD, FlushE} <= 2'b00;
+        end
+        else if (JalrE)
             {FlushD, FlushE} <= 2'b11;
         else if (MemToRegE & ((RdE==Rs1D)||(RdE==Rs2D)))
             {StallF, StallD, FlushE} <= 3'b111;
         else if (JalD)
             FlushD <= 1;
+        else if (predicted_EX_error)
+            {FlushD, FlushE} <= 2'b11;
     end
     // 请补全此处代码
 
