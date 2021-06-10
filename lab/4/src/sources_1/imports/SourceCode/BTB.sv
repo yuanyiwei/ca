@@ -19,12 +19,11 @@ localparam BTB_LEN = 1 << BTB_BIT_LEN;
 
 reg [31:0] branch_PC [BTB_LEN];
 reg [31:0] target_PC [BTB_LEN];
+wire [BTB_BIT_LEN-1:0] PCF_Map = PC_F[BTB_BIT_LEN+1:2];
+wire [BTB_BIT_LEN-1:0] PCE_Map = PC_E[BTB_BIT_LEN+1:2];
 
-wire [BTB_BIT_LEN - 1:0] PC_F_pos = PC_F[BTB_BIT_LEN + 1:2];
-wire [BTB_BIT_LEN - 1:0] PC_E_pos = PC_E[BTB_BIT_LEN + 1:2];
-
-assign predicted_valid = (branch_PC[PC_F_pos] == PC_F) ? 1'b1 : 1'b0;
-assign predicted_PC = (predicted_valid) ? target_PC[PC_F_pos] : 32'b0;
+assign predicted_valid = (branch_PC[PCF_Map] == PC_F) ? 1'b1 : 1'b0;
+assign predicted_PC = (predicted_valid) ? target_PC[PCF_Map] : 32'b0;
 
 always @(posedge clk or posedge rst) begin
     if (rst) begin
@@ -35,8 +34,8 @@ always @(posedge clk or posedge rst) begin
     end
     else begin
         if ((br_type_E != `NOBRANCH) & branch_E) begin
-            branch_PC[PC_E_pos] <= PC_E;
-            target_PC[PC_E_pos] <= target_E;
+            branch_PC[PCE_Map] <= PC_E;
+            target_PC[PCE_Map] <= target_E;
         end
     end
 end
