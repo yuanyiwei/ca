@@ -18,8 +18,8 @@ localparam BHT_LEN = 1 << BHT_BIT_LEN;
 
 reg [31:0] branch_PC [BHT_LEN];
 reg [1:0] state [BHT_LEN];
-wire [BHT_BIT_LEN - 1:0] PC_F_pos = PC_F[BHT_BIT_LEN + 1:2];
-wire [BHT_BIT_LEN - 1:0] PC_E_pos = PC_E[BHT_BIT_LEN + 1:2];
+wire [BHT_BIT_LEN-1:0] PC_F_pos = PC_F[BHT_BIT_LEN+1:2];
+wire [BHT_BIT_LEN-1:0] PC_E_pos = PC_E[BHT_BIT_LEN+1:2];
 
 assign predicted_valid = ((branch_PC[PC_F_pos] == PC_F) & state[PC_F_pos][1]) ? 1'b1 : 1'b0;
 
