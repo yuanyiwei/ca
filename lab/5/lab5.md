@@ -31,13 +31,19 @@ ADD.D   F6, F8, F2
 
 1. 周期 2 截图:
 
+   ![step2](assets/step2.png)
+
    周期 3 截图:
+
+   ![step3](assets/step3.png)
 
    在周期 2 时，第一条 L.D 指令开始执行，Load1 部件得到了第一条 L.D 指令需要读取的内存地址。第二条 L.D 指令发射，占用 Load2 部件。
 
    在周期 3 时，第一条 L.D 指令 (Load1) 得到了内存中需要读取的值（但是结果还没有写回），Load2 部件得到了第二条 L.D 指令需要读取的内存地址。
 
 2. MUL.D 刚开始执行截图：
+
+   ![step6mul](assets/step6mul.png)
 
    变动：
 
@@ -51,7 +57,11 @@ ADD.D   F6, F8, F2
 
 4. 15 周期截图:
 
+   ![step15](assets/step15.png)
+
    16 周期截图:
+
+   ![step16](assets/step16.png)
 
    变化：
 
@@ -69,6 +79,8 @@ ADD.D   F6, F8, F2
      - Load 部件无变化。
 
 5. 最后一条指令执行完成为 57 周期，截图：
+
+   ![step57](assets/step57.png)
 
 ## 多 cache 一致性算法-监听法
 
@@ -89,6 +101,8 @@ ADD.D   F6, F8, F2
 
 2. 截图
 
+   ![cache1](assets/cache1.png)
+
 ## 多 cache 一致性算法-目录法
 
 1. 填表。（传块优化关闭）
@@ -106,6 +120,8 @@ ADD.D   F6, F8, F2
    | CPU A 读第 12 块 | 向存储 C 发送「写回并修改共享集合」的消息，Cache A 中被修改的第 20 块的数据被写回存储 C，对应共享集合为空。之后向存储 B 发送「读不命中」，存储 B 将数据传输给 Cache A 第 0 块，标记为共享。对应存储块亦标记为共享。共享集合 {A}。 |
 
 2. 截图:
+
+   ![cache2](assets/cache2.png)
 
 ## 综合问答
 
